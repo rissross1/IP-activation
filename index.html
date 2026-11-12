@@ -69,12 +69,14 @@ select:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,1
 .at{display:flex;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:.8rem}
 .at:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,141,239,.28)}
 .at span{padding-left:.9rem;font-size:1.1rem;color:var(--ink);user-select:none}
-.at input{border:0;border-radius:0 .8rem .8rem 0;background:transparent;padding-left:.15rem;flex:1;min-width:0}
-.at input:focus{outline:0;box-shadow:none}
+.at input{border:0;border-radius:0 .8rem .8rem 0;background:transparent;padding-left:.15rem;width:auto!important;flex:1 1 0!important;min-width:0!important}
+.at input:focus{outline:0;box-shadow:none!important}
+.at input{border:0;border-radius:0 .8rem .8rem 0;background:transparent;padding-left:.15rem;width:auto!important;flex:1 1 0!important;min-width:0!important}
+.at input:focus{outline:0;box-shadow:none!important}
 .f.go{justify-content:flex-end}
 button.btn{border:0;font-size:1.05rem;width:100%}
 input:user-invalid,select:user-invalid{border-color:#F2788F}
-.act .msg{margin:.9rem 0 0;font-weight:700;color:#FF3B30}
+.act p.msg{margin:.9rem 0 0;font-weight:700;color:#FF3B30!important}
 .msg:empty{margin:0}
 dialog{background:var(--surface);color:var(--ink);border:2px solid var(--accent);border-radius:1.2rem;padding:1.5rem;width:min(30rem,calc(100vw - 2rem));text-align:center}
 dialog::backdrop{background:rgba(5,9,18,.78)}
