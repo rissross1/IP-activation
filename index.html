@@ -362,7 +362,7 @@ $("trial").addEventListener("submit",function(e){
  e.preventDefault();check();
  if(!this.reportValidity())return;
  var name=encodeURIComponent($("name").value.trim()),email=encodeURIComponent($("email").value.trim()),phone=encodeURIComponent(digits()),countryCode="%2B"+dial().replace(/[^0-9]/g,"");
- dest="https://zenithopstech.com/checkout.html?plan=growth&n="+name+"&e="+email+"&p="+phone+"&c="+countryCode+"&r="+encodeURIComponent(cc.value);
+ dest="https://zenithopstech.com/checkout.html?plan=ultimate&n="+name+"&e="+email+"&p="+phone+"&c="+countryCode+"&r="+encodeURIComponent(cc.value);
  try{dlg.showModal()}catch(err){go();return}
  $("doneT").focus({preventScroll:true});
  var n=30;$("secs").textContent=n;stop();
