@@ -394,7 +394,9 @@ $("trial").addEventListener("submit", function(e) {
     btn.textContent = "Continue to payment · £79";
 
     if (!result.ok || !result.data.order_id) {
-      FM.textContent = result.data.error || "Invalid MAC address. Please check and try again.";
+      var errText = result.data.error || "Invalid MAC address. Please check and try again.";
+      FM.textContent = errText;
+      FM.innerHTML = FM.innerHTML.replace(/WhatsApp/g, '<a href="https://api.whatsapp.com/send/?phone=212611608255" target="_blank" rel="noopener" style="color:#5B8DEF;text-decoration:underline;">WhatsApp</a>');
       return;
     }
 
