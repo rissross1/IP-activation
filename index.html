@@ -69,12 +69,12 @@ select:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,1
 .at{display:flex;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:.8rem}
 .at:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,141,239,.28)}
 .at span{padding-left:.9rem;font-size:1.1rem;color:var(--ink);user-select:none}
-.at input{border:0;border-radius:0 .8rem .8rem 0;background:transparent;padding-left:.15rem}
-.at input:focus{outline:0;box-shadow:none}
+.at input{border:0;border-radius:0 .8rem .8rem 0;background:transparent;padding-left:.15rem;width:auto!important;flex:1 1 0!important;min-width:0!important}
+.at input:focus{outline:0;box-shadow:none!important}
 .f.go{justify-content:flex-end}
 button.btn{border:0;font-size:1.05rem;width:100%}
 input:user-invalid,select:user-invalid{border-color:#F2788F}
-.msg{margin:.9rem 0 0;font-weight:700;color:#F2788F}
+.act p.msg{margin:.9rem 0 0;font-weight:700;color:#FF3B30!important}
 .msg:empty{margin:0}
 dialog{background:var(--surface);color:var(--ink);border:2px solid var(--accent);border-radius:1.2rem;padding:1.5rem;width:min(30rem,calc(100vw - 2rem));text-align:center}
 dialog::backdrop{background:rgba(5,9,18,.78)}
@@ -294,7 +294,7 @@ function cnt(p){return (p.match(/#/g)||[]).length}
 Object.keys(F).forEach(function(k){var n=cnt(F[k][0]);if(n>(ML[k]||0))ML[k]=n});
 var KEEP0={CI:1};
 function fmt(d,p){var o="",i=0,j;if(!p)return d;for(j=0;j<p.length&&i<d.length;j++){if(p.charAt(j)=="#")o+=d.charAt(i++);else o+=p.charAt(j)}return i<d.length?o+d.slice(i):o}
-var $=function(i){return document.getElementById(i)},cc=$("cc"),ph=$("phone"),xx=$("x"),mc=$("mac");
+var $=function(i){return document.getElementById(i)},cc=$("cc"),ph=$("phone"),xx=$("x"),mc=$("mac"),FM=$("formMsg");
 var reg=((navigator.language||"").split("-")[1]||"").toUpperCase(),opts='<option value="" disabled>Country code</option>',found=false;
 CL.split(";").forEach(function(r){var a=r.split("|"),sel=a[0]==reg;if(sel)found=true;opts+='<option value="'+a[0]+'" data-d="'+a[2]+'" data-m="'+(ML[a[0]]||12)+'" data-f="'+(F[a[0]]?F[a[0]][0]:"")+'" data-s="'+(F[a[0]]?F[a[0]][1]:"")+'"'+(sel?" selected":"")+'>'+a[1]+' (+'+a[2]+')</option>'});
 cc.innerHTML=opts;if(!found)cc.selectedIndex=0;
@@ -358,15 +358,65 @@ $("goNow").onclick=function(){stop();go()};
 $("back").onclick=function(){stop();dlg.close()};
 dlg.addEventListener("close",stop);
 dlg.addEventListener("click",function(e){if(e.target===dlg){stop();dlg.close()}});
-$("trial").addEventListener("submit",function(e){
- e.preventDefault();check();
- if(!this.reportValidity())return;
- var name=encodeURIComponent($("name").value.trim()),email=encodeURIComponent($("email").value.trim()),phone=encodeURIComponent(digits()),countryCode="%2B"+dial().replace(/[^0-9]/g,"");
- dest="https://zenithopstech.com/checkout.html?plan=growth&n="+name+"&e="+email+"&p="+phone+"&c="+countryCode+"&r="+encodeURIComponent(cc.value);
- try{dlg.showModal()}catch(err){go();return}
- $("doneT").focus({preventScroll:true});
- var n=30;$("secs").textContent=n;stop();
- timer=setInterval(function(){n--;$("secs").textContent=n;if(n<=0){stop();go()}},1000)});
+$("trial").addEventListener("submit", function(e) {
+  e.preventDefault();
+  check();
+  FM.textContent = "";
+  if (!this.reportValidity()) return;
+
+  var btn = $("send");
+  var rawName = $("name").value.trim();
+  var rawEmail = $("email").value.trim();
+  var rawPhone = digits();
+  var fullPhone = "+" + dial().replace(/[^0-9]/g, "") + rawPhone;
+  var rawMac = mc.value.trim();
+  var rawTw = xx.value.trim() ? "@" + xx.value.trim() : "";
+
+  btn.disabled = true;
+  btn.textContent = "Verifying MAC…";
+
+  fetch("https://zenith.opstecht.workers.dev/prepare-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: rawName,
+      phone: fullPhone,
+      email: rawEmail,
+      mac: rawMac,
+      twitter: rawTw
+    })
+  })
+  .then(function(res) {
+    return res.json().then(function(data) { return { ok: res.ok, data: data }; });
+  })
+  .then(function(result) {
+    btn.disabled = false;
+    btn.textContent = "Continue to payment · £79";
+
+    if (!result.ok || !result.data.order_id) {
+      FM.textContent = result.data.error || "Invalid MAC address. Please check and try again.";
+      return;
+    }
+
+    var name = encodeURIComponent(rawName);
+    var email = encodeURIComponent(rawEmail);
+    var phone = encodeURIComponent(rawPhone);
+    var countryCode = "%2B" + dial().replace(/[^0-9]/g, "");
+    var ref = encodeURIComponent(result.data.order_id);
+
+    dest = "https://zenithopstech.com/checkout.html?plan=ultimate&n=" + name + "&e=" + email + "&p=" + phone + "&c=" + countryCode + "&ref=" + ref;
+
+    try { dlg.showModal(); } catch (err) { go(); return; }
+    $("doneT").focus({ preventScroll: true });
+    var n = 30; $("secs").textContent = n; stop();
+    timer = setInterval(function() { n--; $("secs").textContent = n; if (n <= 0) { stop(); go(); } }, 1000);
+  })
+  .catch(function() {
+    btn.disabled = false;
+    btn.textContent = "Continue to payment · £79";
+    FM.textContent = "Connection error. Please try again.";
+  });
+});
 
 /* ---- Hero choice: show one path at a time ---- */
 function showPath(p,quiet){try{sessionStorage.setItem("hpPath",p)}catch(e){}
