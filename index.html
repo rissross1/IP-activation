@@ -132,6 +132,8 @@ dialog .small{margin:0 0 .2rem}
 .warn b.caps{color:var(--ink);letter-spacing:.02em}
 .btn.big{box-shadow:none}
 #doneT:focus{outline:0}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1.4rem}
+.chip{background:var(--surface2);border:2px solid var(--line);border-radius:999px;padding:.3rem .85rem;font-weight:700;font-size:.95rem}
 </style>
 </head>
 <body>
@@ -257,6 +259,9 @@ var D=[
 {id:"fire",n:"Fire Stick",k:"stick",skip:true,g:[
  {t:"Part 1 · Enable Developer Options",id:"p1",intro:"Hot Player is not always listed directly on the Amazon Appstore, so the easiest and safest method is the <b>Downloader</b> app.",s:[["Install <b>Downloader</b> from the Amazon Appstore.","installg"],["Go to <b>Settings</b> (the gear icon) on your Fire Stick home screen.","gear"],["Select <b>My Fire TV</b>, then <b>About</b>.","menu"],["Click the name of your device <b>7 times</b> quickly, until it says “You are now a developer.”","about"],["Go back one screen and select <b>Developer options</b>.","menu"],["Turn on <b>Install unknown apps</b> (or <b>Apps from unknown sources</b>), then turn on <b>Downloader</b>.","toggle"]]},
  {t:"Part 2 · Install HotPlayer",id:"p2",s:[["Open <b>Downloader</b>.","open"],["Enter the code <code>395800</code> and press <b>Go</b>.","dl"],["Install <b>Hot Player</b>, then open it.","install"],MAC]}]},
+{id:"androidbox",n:"Android TV Box",k:"box",ex:["Chromecast with Google TV","Xiaomi TV Box","NVIDIA Shield TV","X96, H96, MXQ, HK1","Other Android TV boxes"],skip:true,g:[
+ {t:"Part 1 · Get Downloader ready",id:"p1",intro:"Hot Player is not always listed in the Google Play Store on these boxes, so the easiest and safest method is the <b>Downloader</b> app.",s:[["Install <b>Downloader</b> from the Google Play Store.","installg"],["Go to <b>Settings</b> (the gear icon) on your box’s home screen.","gear"],["Open <b>Device Preferences</b>, then <b>Security &amp; restrictions</b>. On some boxes this is called <b>Security</b> or <b>Apps</b>.","menu"],["Turn on <b>Unknown sources</b> (or <b>Install unknown apps</b>), then turn on <b>Downloader</b>. Depending on your TV box model, this setting may be under <b>Settings → Apps → Special app access → Install unknown apps</b>.","toggle"]]},
+ {t:"Part 2 · Install HotPlayer",id:"p2",s:[["Open <b>Downloader</b>.","open"],["Enter the code <code>395800</code> and press <b>Go</b>.","dl"],["Install <b>Hot Player</b>, then open it.","install"],MAC]}]},
 {id:"android",n:"Android phone or tablet",k:"phone",g:[{s:[["Open <a href=\"https://hotplayer.app\" target=\"_blank\" rel=\"noopener\">hotplayer.app</a> in your browser.","search"],["Download the <b>Android APK</b>.","install"],["Open your <b>Downloads</b> folder and tap the APK file.","open"],["If asked, allow installs from that source.","toggle"],["Press <b>Install</b>, then <b>Open</b>.","install"],MAC]}]},
 {id:"ios",n:"iPhone or iPad",k:"phone",g:[{s:[["Open the <b>App Store</b>.","open"],["Tap <b>Search</b> and type <b>Hot Player</b>.","search"],["Select <b>Hot Player</b> and check that the developer is <b>STE DIGI VIBES</b>.","pick"],["Press <b>Get</b> and confirm with your Apple ID.","install"],["Open the app.","open"],MAC]}]},
 {id:"atv",n:"Apple TV",k:"box",g:[{s:[["Open the <b>App Store</b>.","open"],["Search for <b>Hot Player</b>.","search"],[PICK,"pick"],["Press <b>Get</b>.","install"],["Open it from your home screen.","open"],MAC]}]},
@@ -271,6 +276,7 @@ function draw(){
 P.innerHTML=D.map(function(d){return '<button class="dev" type="button" data-id="'+d.id+'" aria-pressed="'+(d.id==cur)+'">'+icon(d.k)+d.n+'</button>'}).join("");
 if(!cur){PN.innerHTML="";return}
 var d=D.filter(function(x){return x.id==cur})[0],h='<div class="head">'+icon(d.k)+'<h2 class="dn">'+d.n+'</h2></div>';
+if(d.ex)h+='<p class="intro" style="margin:0 0 .5rem">Examples:</p><div class="chips">'+d.ex.map(function(e){return '<span class="chip">'+e+'</span>'}).join("")+'</div>';
 if(d.skip)h+='<div class="skip"><span>Already have <b>Downloader</b> with unknown apps turned on? You can skip ahead.</span><a class="btn" href="#p2" data-go="p2">Go to Part 2</a></div>';
 d.g.forEach(function(g){
  if(g.t)h+='<h3 id="'+g.id+'">'+g.t+'</h3>';
