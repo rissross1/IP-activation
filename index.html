@@ -368,7 +368,7 @@ cc.addEventListener("change",saveForm);
 window.addEventListener("pagehide",saveForm);
 
 /* ---- Plans: 12 months (£79) or 3 months (£29) ---- */
-var PLANS={"12":{price:"£79",url:"https://zenithopstech.com/checkout?plan=ultimate"},"3":{price:"£29",url:"https://zenithopstech.com/checkout?plan=core"}};
+var PLANS={"12":{price:"£79",url:"https://zenithopstech.com/checkout.html?plan=ultimate"},"3":{price:"£29",url:"https://zenithopstech.com/checkout.html?plan=core"}};
 function plan(){var r=document.querySelector('input[name="plan"]:checked');return PLANS[r?r.value:"12"]}
 function btnText(){return "Continue to payment · "+plan().price}
 document.querySelectorAll('input[name="plan"]').forEach(function(r){r.addEventListener("change",function(){$("send").textContent=btnText();saveForm()})});
@@ -417,7 +417,8 @@ $("trial").addEventListener("submit", function(e) {
       phone: fullPhone,
       email: rawEmail,
       mac: rawMac,
-      twitter: rawTw
+      twitter: rawTw,
+      plan: document.querySelector('input[name="plan"]:checked').value
     })
   })
   .then(function(res) {
