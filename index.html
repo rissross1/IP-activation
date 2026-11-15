@@ -372,6 +372,11 @@ var PLANS={"12":{price:"£79",url:"https://zenithopstech.com/checkout.html?plan=
 function plan(){var r=document.querySelector('input[name="plan"]:checked');return PLANS[r?r.value:"12"]}
 function btnText(){return "Continue to payment · "+plan().price}
 document.querySelectorAll('input[name="plan"]').forEach(function(r){r.addEventListener("change",function(){$("send").textContent=btnText();saveForm()})});
+var urlPlan = new URLSearchParams(location.search).get("plan");
+if (urlPlan === "3" || urlPlan === "12") {
+  var radio = document.querySelector('input[name="plan"][value="' + urlPlan + '"]');
+  if (radio) { radio.checked = true; $("send").textContent = btnText(); showPath("activate", true); }
+}
 
 function restoreForm(){var s=readStore();if(!s)return false;
  if(s.cc&&cc.value!==s.cc){cc.value=s.cc;setPh()}
